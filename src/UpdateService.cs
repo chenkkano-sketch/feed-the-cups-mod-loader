@@ -25,7 +25,7 @@ public static class UpdateService {
         ServicePointManager.SecurityProtocol |= (SecurityProtocolType)3072;
         var request = (HttpWebRequest)WebRequest.Create(url);
         request.UserAgent = "FTCModLoader/" + Data.Version + " (+" + Repository + ")";
-        request.Accept = "application/vnd.github+json";
+        request.Accept = "*/*";
         request.Timeout = 20000;
         request.ReadWriteTimeout = 20000;
         request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
@@ -46,36 +46,33 @@ public static class UpdateService {
     }
 
     public static RemoteRelease Check() {
-        Dictionary<string,object> data;
-        try { data = Data.Obj(Data.Json.DeserializeObject(ReadText("https://api.github.com/repos/chenkkano-sketch/feed-the-cups-mod-loader/releases/latest", 1024 * 1024))); }
-        catch (WebException error) { throw new Exception("无法获取 GitHub 最新版本。请检查网络或稍后重试。", error); }
-        var tag = Data.Str(data, "tag_name").TrimStart('v', 'V');
+        // Public GitHub API has a shared anonymous quota. The release redirect and its
+        // checksum asset are public and do not consume that quota.
+        string tag;
+        try {
+            using (var response = Request(Releases).GetResponse()) {
+                var final = response.ResponseUri;
+                if (final.Host != "github.com") throw new Exception("GitHub Release 跳转地址异常。");
+                var match = Regex.Match(final.AbsolutePath, @"^/chenkkano-sketch/feed-the-cups-mod-loader/releases/tag/v(\d+\.\d+\.\d+)/?$", RegexOptions.IgnoreCase);
+                if (!match.Success) throw new Exception("找不到有效的最新 Release 版本号。");
+                tag = match.Groups[1].Value;
+            }
+        } catch (WebException error) { throw new Exception("无法连接 GitHub Release：" + error.Message, error); }
         Version parsed;
         if (!Version.TryParse(tag, out parsed) || parsed.Build < 0) throw new Exception("GitHub Release 版本号无效。");
         var expectedName = "FTCModLoader-" + tag + ".zip";
-        string checksumUrl = null;
-        var result = new RemoteRelease { Version = tag, ZipName = expectedName };
-        foreach (var item in Data.Arr(Data.Get(data, "assets", new object[0]))) {
-            var asset = Data.Obj(item);
-            var name = Data.Str(asset, "name");
-            if (name == expectedName) {
-                result.ZipUrl = Data.Str(asset, "browser_download_url");
-                result.Size = Convert.ToInt64(Data.Get(asset, "size", 0));
-                var digest = Data.Str(asset, "digest");
-                if (Regex.IsMatch(digest, @"^sha256:[0-9a-fA-F]{64}$")) result.Sha256 = digest.Substring(7).ToLowerInvariant();
-            } else if (name == expectedName + ".sha256") checksumUrl = Data.Str(asset, "browser_download_url");
-        }
-        if (String.IsNullOrEmpty(result.ZipUrl) || !result.ZipUrl.StartsWith(Repository + "/releases/download/", StringComparison.OrdinalIgnoreCase)) throw new Exception("Release 缺少完整安装压缩包。");
-        if (result.Size <= 0 || result.Size > MaximumArchive) throw new Exception("Release 安装包大小异常。");
-        if (checksumUrl != null) {
-            var checksum = ReadText(checksumUrl, 4096);
+        var result = new RemoteRelease { Version = tag, ZipName = expectedName, ZipUrl = Repository + "/releases/download/v" + tag + "/" + expectedName };
+        try {
+            var checksum = ReadText(result.ZipUrl + ".sha256", 4096);
             var match = Regex.Match(checksum, @"\b([0-9a-fA-F]{64})\s+\*?" + Regex.Escape(expectedName) + @"\b");
             if (!match.Success) throw new Exception("Release 校验文件不完整。");
-            var expected = match.Groups[1].Value.ToLowerInvariant();
-            if (result.Sha256 != null && result.Sha256 != expected) throw new Exception("Release 校验值不一致。");
-            result.Sha256 = expected;
-        }
-        if (result.Sha256 == null) throw new Exception("Release 缺少 SHA-256 校验值。");
+            result.Sha256 = match.Groups[1].Value.ToLowerInvariant();
+        } catch (WebException error) { throw new Exception("无法读取 GitHub Release 的 SHA-256 校验文件：" + error.Message, error); }
+        try {
+            var head = Request(result.ZipUrl); head.Method = "HEAD";
+            using (var response = head.GetResponse()) result.Size = response.ContentLength;
+        } catch (WebException) { result.Size = 0; }
+        if (result.Size > MaximumArchive) throw new Exception("Release 安装包大小异常。");
         return result;
     }
 
@@ -92,12 +89,12 @@ public static class UpdateService {
                 var buffer = new byte[65536]; int count;
                 while ((count = input.Read(buffer, 0, buffer.Length)) > 0) {
                     total += count;
-                    if (total > MaximumArchive || total > release.Size) throw new Exception("下载大小超过 Release 所声明的大小。");
+                    if (total > MaximumArchive || (release.Size > 0 && total > release.Size)) throw new Exception("下载大小超过允许范围。");
                     output.Write(buffer, 0, count);
-                    if (progress != null) progress((int)(total * 100 / release.Size));
+                    if (progress != null) progress(release.Size > 0 ? (int)(total * 100 / release.Size) : -1);
                 }
             }
-            if (total != release.Size) throw new Exception("下载不完整，请重新尝试。");
+            if (release.Size > 0 && total != release.Size) throw new Exception("下载不完整，请重新尝试。");
             if (Data.HashFile(path) != release.Sha256) throw new Exception("下载文件的 SHA-256 与 GitHub Release 不一致。");
             Validate(path);
             return path;

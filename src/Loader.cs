@@ -1,9 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -12,11 +10,10 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web.Script.Serialization;
-using System.Windows.Forms;
 
 namespace CupsModLoader {
 public static class Data {
-    public const string Version = "1.1.0";
+    public const string Version = "1.1.1";
     public const string Api = "1.0";
     public const string GameHash = "6bd9534ba18c2b8ed17db98b3080c85176d3d9c1cd80ead2ae3a9884b773b109";
     public const string ExeHash = "c52fb468fa1cb9c0fb048cd23c680023a16ad47e056fbf7b8e454340c924a745";
@@ -400,40 +397,6 @@ public sealed class Loader {
     }
 }
 
-public sealed class LegacyManager : Form {
-    Loader loader; CheckedListBox list=new CheckedListBox();TextBox detail=new TextBox();Label status=new Label();ComboBox profiles=new ComboBox();List<Mod> mods=new List<Mod>();Button start=new Button();bool refreshing=false;
-    readonly Dictionary<string,string> names=new Dictionary<string,string>{{"default","我的配置"},{"rent_coop","房租联机＋实时搬运（测试）"},{"both","房租＋修改器＋搬运"},{"rent","房租＋搬运"},{"rent_only","仅房租模式"},{"trainer","仅修改器"},{"furniture","仅自由搬运"},{"talent","人才市场＋自由搬运"},{"talent_rent","人才市场＋房租＋搬运"},{"talent_all","全部模块"}};
-    public LegacyManager(Loader value) {
-        loader=value;Text="杯杯倒满 Mod 加载器 "+Data.Version;Font=new Font("Microsoft YaHei UI",9);ClientSize=new Size(850,535);MinimumSize=new Size(866,574);StartPosition=FormStartPosition.CenterScreen;AllowDrop=true;
-        var header=new Label{Text="杯杯倒满 Mod 加载器",Font=new Font(Font.FontFamily,17,FontStyle.Bold),AutoSize=true,Location=new Point(22,18)};Controls.Add(header);
-        Controls.Add(new Label{Text="勾选需要的 Mod，然后启动游戏。更改在下次启动时生效。",AutoSize=true,Location=new Point(24,59)});
-        profiles.DropDownStyle=ComboBoxStyle.DropDownList;profiles.DisplayMember="Value";profiles.ValueMember="Key";profiles.SetBounds(24,90,225,30);foreach(var p in names)profiles.Items.Add(p);profiles.SelectedIndex=0;Controls.Add(profiles);
-        profiles.SelectedIndexChanged+=(s,e)=>RefreshMods();
-        list.CheckOnClick=true;list.SetBounds(24,132,330,292);list.Anchor=AnchorStyles.Top|AnchorStyles.Bottom|AnchorStyles.Left;Controls.Add(list);
-        list.SelectedIndexChanged+=(s,e)=>ShowDetail();list.ItemCheck+=(s,e)=>{if(!refreshing){var selected=new HashSet<int>(list.CheckedIndices.Cast<int>());if(e.NewValue==CheckState.Checked)selected.Add(e.Index);else selected.Remove(e.Index);loader.SaveProfile(Profile,selected.Select(i=>mods[i].Id));status.Text="配置已保存，下次启动生效。";}};
-        detail.Multiline=true;detail.ReadOnly=true;detail.ScrollBars=ScrollBars.Vertical;detail.SetBounds(372,90,452,334);detail.Anchor=AnchorStyles.Top|AnchorStyles.Bottom|AnchorStyles.Left|AnchorStyles.Right;Controls.Add(detail);
-        var import=Button("导入 Mod…",24,439,112,()=>Import());var folder=Button("Mod 目录",144,439,100,()=>Open(loader.Mods));var refresh=Button("刷新",252,439,100,()=>RefreshMods());
-        Button("安装/更新内置 Mod",372,439,170,()=>UpdateBundled());
-        Button("日志",550,439,65,()=>{Directory.CreateDirectory(Path.Combine(loader.Home,"Logs"));Open(Path.Combine(loader.Home,"Logs"));});
-        Button("启动原版",623,439,90,()=>Launch(true));start=Button("启动游戏",721,439,103,()=>Launch(false));
-        status.Text="就绪";status.SetBounds(24,488,800,40);status.Anchor=AnchorStyles.Left|AnchorStyles.Right|AnchorStyles.Bottom;Controls.Add(status);
-        DragEnter+=(s,e)=>e.Effect=e.Data.GetDataPresent(DataFormats.FileDrop)?DragDropEffects.Copy:DragDropEffects.None;
-        DragDrop+=(s,e)=>{try{foreach(string path in (string[])e.Data.GetData(DataFormats.FileDrop))ImportFile(path);RefreshMods();}catch(Exception error){Report(error);}};
-        RefreshMods();
-    }
-    Button Button(string text,int x,int y,int width,Action action){var b=new Button{Text=text};b.SetBounds(x,y,width,36);b.Anchor=AnchorStyles.Left|AnchorStyles.Bottom;Controls.Add(b);b.Click+=(s,e)=>{try{action();}catch(Exception error){Report(error);}};return b;}
-    string Profile { get {return ((KeyValuePair<string,string>)profiles.SelectedItem).Key;} }
-    void RefreshMods() {refreshing=true;mods=loader.Discover();var active=new HashSet<string>(loader.Enabled(Profile));list.Items.Clear();foreach(var m in mods)list.Items.Add(m.Name+"  "+m.Version,active.Contains(m.Id));refreshing=false;status.Text=loader.Errors.Count==0?"已安装 "+mods.Count+" 个 Mod；拖入 .ftcmod 文件即可安装。":String.Join("；",loader.Errors);if(mods.Count>0)list.SelectedIndex=0;}
-    void SaveSelection(){loader.SaveProfile(Profile,list.CheckedIndices.Cast<int>().Select(i=>mods[i].Id));status.Text="配置已保存，下次启动生效。";}
-    void ShowDetail(){if(list.SelectedIndex<0)return;var m=mods[list.SelectedIndex];var deps=Data.Obj(Data.Get(m.Manifest,"dependencies",new Dictionary<string,object>()));var labels=new Dictionary<string,string>{{"gameplay","玩法"},{"input","输入"},{"ui","界面"},{"config","配置"},{"save","存档"},{"recipes","配方"},{"levels","关卡"}};detail.Text=m.Name+"\r\n"+m.Id+"  v"+m.Version+"\r\nAPI "+Data.Api+" / 游戏 1.0.2.0\r\n\r\n"+Data.Str(m.Manifest,"description")+"\r\n\r\n依赖："+(deps.Count==0?"无":String.Join("，",deps.Select(p=>p.Key+" "+p.Value)))+"\r\n声明能力："+String.Join("、",Data.Arr(Data.Get(m.Manifest,"capabilities",new object[0])).Select(c=>labels[Convert.ToString(c)]))+"\r\n\r\n"+m.Directory;}
-    void Import(){using(var dialog=new OpenFileDialog{Filter="杯杯倒满 Mod (*.ftcmod;*.zip)|*.ftcmod;*.zip",Multiselect=true})if(dialog.ShowDialog()==DialogResult.OK){foreach(var f in dialog.FileNames)ImportFile(f);RefreshMods();}}
-    void ImportFile(string path){var mod=loader.Install(path);status.Text="已安装 "+mod.Name+"；请勾选后启动。";}
-    void UpdateBundled(){SaveSelection();Enabled=false;status.Text="正在校验并更新内置 Mod…";var worker=new BackgroundWorker();worker.DoWork+=(s,e)=>e.Result=loader.UpdateBundled();worker.RunWorkerCompleted+=(s,e)=>{Enabled=true;if(e.Error!=null)Report(e.Error);else{var changed=(List<Mod>)e.Result;RefreshMods();status.Text=changed.Count==0?"内置 Mod 已是最新版本。":"已更新 "+String.Join("、",changed.Select(m=>m.Name+" "+m.Version))+"；下次启动生效。";}};worker.RunWorkerAsync();}
-    void Open(string path){Process.Start(new ProcessStartInfo(path){UseShellExecute=true});}
-    void Report(Exception error){loader.Log("ERROR "+error.Message);MessageBox.Show(this,error.Message,"加载器",MessageBoxButtons.OK,MessageBoxIcon.Information);status.Text="未启动："+error.Message;}
-    void Launch(bool vanilla){SaveSelection();Enabled=false;status.Text="正在检查 Mod 并准备游戏…";var profile=Profile;var worker=new BackgroundWorker();worker.DoWork+=(s,e)=>loader.Launch(profile,vanilla);worker.RunWorkerCompleted+=(s,e)=>{Enabled=true;if(e.Error!=null)Report(e.Error);else status.Text="游戏已启动。请先保存退出游戏，再切换 Mod。";};worker.RunWorkerAsync();}
-}
-
 public static class Program {
     static string Value(string[] args,string key,string fallback){int n=Array.IndexOf(args,key);return n>=0&&n+1<args.Length?args[n+1]:fallback;}
     [STAThread] public static int Main(string[] args) {
@@ -445,8 +408,7 @@ public static class Program {
             if(args.Contains("--apply-update"))return UpdateService.Apply(Value(args,"--apply-update",""),Value(args,"--destination",""),Value(args,"--wait-pid","0"));
             if(args.Length==0&&!Deployment.IsGame(root)) {
                 if(!Deployment.IsBundle(root))throw new Exception("安装包不完整，请完整解压压缩包后运行加载器。");
-                Application.EnableVisualStyles();Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new SetupManager(root));return 0;
+                new System.Windows.Application().Run(new SetupWindow(root));return 0;
             }
             loader=new Loader(root);
             string profile=Value(args,"--profile","default");
@@ -457,9 +419,8 @@ public static class Program {
             if(args.Contains("--update-bundled")){var changed=loader.UpdateBundled();Console.WriteLine(Data.Json.Serialize(new {updated=changed.Select(m=>m.Id+"@"+m.Version).ToArray()}));return 0;}
             if(args.Contains("--export")){loader.Export(Value(args,"--export",""),Value(args,"--out","module.ftcmod"));return 0;}
             if(args.Contains("--launch")){loader.Launch(profile,args.Contains("--vanilla"));return 0;}
-            if(args.Contains("--ui-preview")){Application.EnableVisualStyles();using(var form=new Manager(loader)){form.ShowInTaskbar=false;form.StartPosition=FormStartPosition.Manual;form.Location=new Point(-30000,-30000);form.Opacity=0;form.Show();Application.DoEvents();form.Update();using(var bitmap=new Bitmap(form.Width,form.Height)){form.DrawToBitmap(bitmap,new Rectangle(0,0,form.Width,form.Height));bitmap.Save(Value(args,"--ui-preview","loader-preview.png"),System.Drawing.Imaging.ImageFormat.Png);}form.Close();}return 0;}
-            Application.EnableVisualStyles();Application.SetCompatibleTextRenderingDefault(false);Application.Run(new Manager(loader));return 0;
-        } catch(Exception e){try{if(loader!=null)loader.Log("ERROR "+e.Message);}catch{} Console.Error.WriteLine(e.Message);if(args.Length==0)MessageBox.Show(e.Message,"杯杯倒满 Mod 加载器");return 1;}
+            new System.Windows.Application().Run(new Manager(loader));return 0;
+        } catch(Exception e){try{if(loader!=null)loader.Log("ERROR "+e.Message);}catch{} Console.Error.WriteLine(e.Message);if(args.Length==0)System.Windows.MessageBox.Show(e.Message,"杯杯倒满 Mod 加载器");return 1;}
     }
 }
 }

@@ -1,6 +1,6 @@
 # 杯杯倒满 Mod 启动器
 
-适配《Feed the Cups》Windows 64 位游戏版本 `1.0.2.0` 的 Mod 启动器和模块集合。
+适配《Feed the Cups》Windows 64 位游戏版本 `1.0.2.0` 的 Mod 启动器和模块集合。启动器采用浅色 WPF 界面。
 
 ## 安装
 
@@ -12,7 +12,7 @@
 
 ## 更新
 
-启动器右侧可以检查 GitHub 最新版本、下载并升级，也可以打开仓库或选择已下载的完整 ZIP。GitHub 下载会核对 Release 的大小与 SHA-256。更新时请先退出游戏。更新失败时会保留原压缩包，并记录在 `FTCModLoader/Logs/update-error.log`。
+启动器右侧可以检查 GitHub 最新版本、下载并升级，也可以打开仓库或选择已下载的完整 ZIP。更新检查读取公开 Release，避免 GitHub 匿名 API 的请求额度限制。GitHub 下载会核对 Release 的 SHA-256，文件大小可读取时也会核对大小。更新时请先退出游戏。更新失败时会保留原压缩包，并记录在 `FTCModLoader/Logs/update-error.log`。
 
 只更新内置模块时，可使用启动器底部的“更新内置 Mod”。
 

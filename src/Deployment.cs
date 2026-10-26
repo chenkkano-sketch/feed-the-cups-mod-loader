@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 using Microsoft.Win32;
 
 namespace CupsModLoader {
@@ -111,26 +109,4 @@ public static class Deployment {
     }
 }
 
-public sealed class SetupManager : Form {
-    readonly string source;
-    readonly TextBox path=new TextBox();
-    readonly Label status=new Label();
-    readonly Button install=new Button();
-    public SetupManager(string root) {
-        source=root;Text="安装杯杯倒满 Mod 加载器";Font=new System.Drawing.Font("Microsoft YaHei UI",9);
-        ClientSize=new System.Drawing.Size(620,210);FormBorderStyle=FormBorderStyle.FixedDialog;MaximizeBox=false;StartPosition=FormStartPosition.CenterScreen;
-        Controls.Add(new Label{Text="选择游戏目录；加载器会安装并更新内置 Mod，保留已有配置。",Left=20,Top=22,Width=570,Height=28});
-        var found=Deployment.FindGames();path.SetBounds(20,66,480,27);path.Text=found.Length==1?found[0]:"";Controls.Add(path);
-        var browse=new Button{Text="浏览…",Left=510,Top=65,Width=90,Height=29};browse.Click+=(s,e)=>{using(var picker=new FolderBrowserDialog{Description="选择 Feed the Cups.exe 所在目录",ShowNewFolderButton=false}){if(Directory.Exists(path.Text))picker.SelectedPath=path.Text;if(picker.ShowDialog(this)==DialogResult.OK)path.Text=picker.SelectedPath;}};Controls.Add(browse);
-        install.Text="安装 / 更新";install.SetBounds(460,116,140,38);install.Click+=(s,e)=>Run();Controls.Add(install);
-        status.Text=found.Length>1?"发现多个游戏位置，请确认安装目录。":"就绪";status.SetBounds(20,172,580,24);Controls.Add(status);
-    }
-    void Run() {
-        string destination=path.Text.Trim();if(!Deployment.IsGame(destination)){MessageBox.Show(this,"请选择游戏 EXE 所在目录。","安装未开始",MessageBoxButtons.OK,MessageBoxIcon.Information);return;}
-        install.Enabled=false;status.Text="正在校验并安装，请稍候…";
-        var worker=new BackgroundWorker();worker.DoWork+=(s,e)=>Deployment.Install(source,destination);
-        worker.RunWorkerCompleted+=(s,e)=>{install.Enabled=true;if(e.Error!=null){status.Text="安装未完成："+e.Error.Message;MessageBox.Show(this,e.Error.Message,"安装未完成",MessageBoxButtons.OK,MessageBoxIcon.Error);}else{status.Text="安装完成，正在打开加载器…";Process.Start(new ProcessStartInfo(Path.Combine(destination,"杯杯倒满Mod加载器.exe")){WorkingDirectory=destination,UseShellExecute=false});Close();}};
-        worker.RunWorkerAsync();
-    }
-}
 }
