@@ -275,7 +275,7 @@ func apply_snapshot(layout):
 	_refresh_navigation(carry.level)
 	return true
 
-func apply_action(action, synchronized):
+func apply_action(action):
 	if not is_preparing() or not action is Dictionary:
 		return false
 	var id = int(action.get("player", 0))
@@ -290,8 +290,6 @@ func apply_action(action, synchronized):
 		var fixture = carry.level.get_node("YSort/Devices").get_node_or_null(str(action.get("object", "")))
 		if not is_instance_valid(fixture):
 			return false
-		if not synchronized and actor.global_position.distance_to(fixture.global_position) > 240:
-			return false
 		return worker.pick(actor, fixture, false, true)
 	if not is_instance_valid(worker.held) or worker.held.name != str(action.get("held", action.get("object", ""))):
 		return false
@@ -299,29 +297,13 @@ func apply_action(action, synchronized):
 		var cell = worker.cell_at(action.position)
 		if worker.fixture_at(cell) != null:
 			return false
-		return worker.place(cell, false, synchronized, action.position)
+		return worker.place(cell, false, true, action.position)
 	if kind == "swap":
 		var target = carry.level.get_node("YSort/Devices").get_node_or_null(str(action.get("object", "")))
 		if not is_instance_valid(target):
 			return false
-		if not synchronized and actor.global_position.distance_to(target.global_position) > 240:
-			return false
-		return worker.swap(actor, target, synchronized, action.get("position"), action.get("vacant"))
+		return worker.swap(actor, target, true, action.get("position"), action.get("vacant"))
 	return false
-
-func completed_action(action):
-	var result = action.duplicate(true)
-	var worker = carry_for(int(action.player))
-	if action.kind == "release":
-		var fixture = carry.level.get_node("YSort/Devices").get_node_or_null(str(action.object))
-		if is_instance_valid(fixture):
-			result.position = fixture.position
-	elif action.kind == "swap" and is_instance_valid(worker.held):
-		result.vacant = worker.original_transform.origin
-		var fixture = carry.level.get_node("YSort/Devices").get_node_or_null(str(action.get("held", "")))
-		if is_instance_valid(fixture):
-			result.position = fixture.position
-	return result
 
 func coop_picked(path, actor):
 	if SdkManager.is_multiplay:
