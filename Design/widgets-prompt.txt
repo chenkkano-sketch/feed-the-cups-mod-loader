@@ -1,0 +1,8 @@
+Use case: stylized-concept
+Asset type: production UI widget sprite atlas, hand-painted cozy game UI, matching the attached talent market concept.
+Create one transparent PNG square sprite sheet with EXACTLY 2 columns x 4 rows, EIGHT equal cells (each cell width twice height). Within each cell one complete wide horizontal blank UI element, with 10% transparent padding, centered. Strict equal grid; no element crosses a cell.
+Row1: left a chunky green rounded wooden hire button in normal state, dark hand-ink outline, glossy brushed green top highlight; right the identical green button visibly pressed, darker bottom shading.
+Row2: left a tan brown wooden close button, rounded corners and tactile shading; right a greyed desaturated green disabled button.
+Row3: left a warm cream parchment title plaque with torn deckled paper, slightly irregular dark ink outline and a little paper clip at each upper corner, empty face; right a matching cream paper tab with small red pushpin upper center, empty face.
+Row4: left a long cream paper skill slot inset with faint golden outline and soft rounded corners, blank; right a matching EMPTY skill slot with a hand-drawn dashed inset border, blank.
+No text, no letters, no symbols, no stars, no icons, no scene, no characters, no shadows crossing cells. Quiet empty centers for dynamic Chinese text. Warm brushed texture, subtle dimensional highlights, expressive irregular outlines, match the polished concept art rather than a flat standard UI library. Front-facing perfectly straight, no perspective.

@@ -1,0 +1,224 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Feed The Cups Mod manifest 1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "name",
+    "version",
+    "api_version",
+    "game_versions",
+    "entry",
+    "capabilities"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+      "maxLength": 80
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "api_version": {
+      "const": "1.0"
+    },
+    "game_versions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "contains": {
+        "const": "1.0.1.2"
+      }
+    },
+    "entry": {
+      "type": "string",
+      "pattern": "^(?!/)(?!.*\\.\\./).+\\.gd$"
+    },
+    "description": {
+      "type": "string"
+    },
+    "capabilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "gameplay",
+          "input",
+          "ui",
+          "config",
+          "save",
+          "recipes",
+          "levels"
+        ]
+      }
+    },
+    "dependencies": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "load_after": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "save_profile": {
+      "type": "string"
+    },
+    "author": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "license": {
+      "type": "string"
+    },
+    "loader_version": {
+      "type": "string"
+    },
+    "script_extensions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "scene",
+          "base_script",
+          "script"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "scene": {
+            "type": "string"
+          },
+          "base_script": {
+            "type": "string"
+          },
+          "script": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "scene_clones": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source",
+          "destination",
+          "base_script",
+          "script"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "destination": {
+            "type": "string"
+          },
+          "base_script": {
+            "type": "string"
+          },
+          "script": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "text_patches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "resource",
+          "find",
+          "replace"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "resource": {
+            "type": "string"
+          },
+          "find": {
+            "type": "string"
+          },
+          "replace": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "animation_aliases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "resource",
+          "from",
+          "to"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "resource": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "levels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "base",
+          "values"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "base": {
+            "type": "string"
+          },
+          "values": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  }
+}

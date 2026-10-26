@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "id": "example.hello",
+  "name": "SDK 示例：公共移动倍率",
+  "version": "1.0.0",
+  "api_version": "1.0",
+  "game_versions": ["1.0.1.2"],
+  "entry": "Entry.gd",
+  "description": "示例 Mod：通过公共 API 施加 1.1 倍移动倍率，并订阅每天开始事件。默认不安装、不启用。",
+  "capabilities": ["gameplay", "config"],
+  "dependencies": {},
+  "conflicts": []
+}

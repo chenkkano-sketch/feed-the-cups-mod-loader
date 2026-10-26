@@ -1,0 +1,9 @@
+Use case: stylized-concept
+Asset type: production game UI icon sprite atlas, hand-painted tactile cozy restaurant game, matching the attached concept.
+Create one transparent SQUARE PNG sprite sheet with EXACTLY 4 columns x 4 rows. SIXTEEN equal square cells, a SINGLE icon centered in each cell with 18% transparent margin so no marks cross a cell. Consistent chunky soft dark brown hand ink outlines and softly brushed highlights; friendly, clear small-size silhouettes. No text, letters, numbers, banners, labels, grid lines, background or icon badges.
+Ordered row by row:
+Row1 left to right: filled golden five-point star; hollow cream five-point star with brown outline; round shiny gold coin with a small embossed simple circle (NO letter); iridescent rainbow five-point star.
+Row2: open cardboard shipping box with flaps and a few plain packages inside; green lidded wheeled rubbish bin; red-and-white running shoe; open tan hand with a small comic wobble line for clumsiness.
+Row3: a small order notepad with pencil and simple short scribble lines (no legible writing); glass orange drink with ice and straw; white metal teapot with small steam curls; a stack of white paper cups.
+Row4: wooden handled mop with teal cloth head; electrical plug with yellow lightning; small brass stopwatch; three mint and gold glowing figures in a circular teamwork aura.
+Flat front or simple 3/4 icon view only, no perspective panels, all icons matching visual weight, saturated but gentle colors, readable at 28px, transparent space around every icon. No duplicate icons or extra stars.

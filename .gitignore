@@ -1,0 +1,15 @@
+/*
+!/.gitignore
+!/README.md
+!/src/
+!/Core/
+!/Mods/
+!/SDK/
+!/Design/
+!/Profiles/
+!/使用说明.txt
+!/联机安装说明.txt
+**/.DS_Store
+**/Thumbs.db
+**/*.tmp
+**/*.log

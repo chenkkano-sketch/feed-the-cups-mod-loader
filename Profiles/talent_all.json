@@ -1,0 +1,8 @@
+{
+  "enabled": [
+    "ftc.furniture_carry",
+    "ftc.talent_market",
+    "ftc.rent_mode",
+    "ftc.trainer"
+  ]
+}

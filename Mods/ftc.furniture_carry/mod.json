@@ -1,0 +1,813 @@
+{
+  "schema_version": 1,
+  "id": "ftc.furniture_carry",
+  "name": "自由搬运",
+  "version": "1.3.0",
+  "api_version": "1.0",
+  "game_versions": [
+    "1.0.2.0"
+  ],
+  "loader_version": ">=1.0.1",
+  "entry": "Entry.gd",
+  "description": "正式关卡和房租模式通用。F2 开关搬运，原交互键拿起、放下整套设施，手持时可与面前可搬运家具交换；开店前营业时钟暂停，人物移动和采购配送照常，手动开始营业。右侧蓝图图标切换搬运，开启时绿色勾选；通过收银机开业。与房租模式组合时支持多人实时搬运与交换，房主确认操作，其他玩家实时可见。",
+  "capabilities": [
+    "gameplay",
+    "input",
+    "ui",
+    "save"
+  ],
+  "dependencies": {},
+  "conflicts": [],
+  "script_extensions": [
+    {
+      "scene": "res://TscnAndGd/UI/InGame/GameUI.tscn",
+      "base_script": "res://TscnAndGd/UI/InGame/GameUI.gd",
+      "script": "FurnitureGameUI.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/0_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/0_all.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_1_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_1_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_1_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_1_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_2_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_2_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_2_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_2_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_3_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_3_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_3_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_3_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_1_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_1_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_1_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_1_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_2_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_2_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_2_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_2_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_3_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_3_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_3_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_3_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_4_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_4_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_4_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_4_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_1_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_1_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_1_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_1_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_2_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_2_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_2_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_2_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_3_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_3_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_3_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_3_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_4_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_4_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_4_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_4_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_1_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_1_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_1_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_1_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_2_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_2_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_2_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_2_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_3_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_3_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_3_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_3_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_4_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_4_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_4_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_4_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_1_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_1_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_1_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_1_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_2_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_2_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_2_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_2_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_3_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_3_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_3_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_3_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_4_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_4_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_4_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_4_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_1_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_1_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_1_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_1_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_2_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_2_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_2_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_2_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_3_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_3_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_3_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_3_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_4_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_4_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_4_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_4_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_1_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_1_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_1_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_1_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_2_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_2_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_2_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_2_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_3_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_3_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_3_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_3_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_4_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_4_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_4_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_4_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_1_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_1_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_1_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_1_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_2_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_2_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_2_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_2_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_3_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_3_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_3_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_3_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_4_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_4_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_4_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_4_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "FurnitureLevel.gd"
+    }
+  ]
+}

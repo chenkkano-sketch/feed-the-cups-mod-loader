@@ -1,0 +1,360 @@
+{
+  "schema_version": 1,
+  "id": "ftc.rent_mode",
+  "name": "房租模式",
+  "version": "0.14.16",
+  "api_version": "1.0",
+  "game_versions": [
+    "1.0.2.0"
+  ],
+  "entry": "Entry.gd",
+  "description": "与正常模式共用同一存档和关卡进度；房租经营作为同一存档内的独立记录，从家中进入或继续。首次运行可备份迁入旧房租经营。七张原版实景地图，自选开局、无尽付租、三日上新、每日升级、不限时准备与 Shift 冲刺。高租金压力在第 7 天起加速增长；每日销售额与小费可进一步抬高次日租金，不会降低既有租金。结算先显示带本局卡牌的原版业绩档案，再显示原版风格的绿钞结算；最高杯币除以 20 并受到绿钞上限限制。联机沿用原版公交车加载、玩家同步、每日结算与奖励界面；成员需使用相同 Mod 组合和版本，房主保存经营，成员领取个人奖励。",
+  "capabilities": [
+    "gameplay",
+    "input",
+    "ui",
+    "config",
+    "save",
+    "levels"
+  ],
+  "dependencies": {},
+  "conflicts": [],
+  "script_extensions": [
+    {
+      "scene": "res://TscnAndGd/UI/InGame/NEWGameEndUI.tscn",
+      "base_script": "res://TscnAndGd/UI/InGame/GameEndUI.gd",
+      "script": "RentGameEnd.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Logics/GameLogic/GameLogic.tscn",
+      "base_script": "res://TscnAndGd/Logics/GameLogic/AStarLogic.gd",
+      "script": "RentAstar.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Objects/Home/Hatstand.tscn",
+      "base_script": "res://TscnAndGd/Objects/Home/Wardrobe.gd",
+      "script": "RentHomeWardrobe.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Logics/GameLogic/GameLogic.tscn",
+      "base_script": "res://TscnAndGd/Logics/SystemLogic/ConfigLogic.gd",
+      "script": "RentConfig.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Logics/GameLogic/GameLogic.tscn",
+      "base_script": "res://TscnAndGd/Logics/GameLogic/GameLogic.gd",
+      "script": "RentGameLogic.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/UI/InGame/DayEndUI.tscn",
+      "base_script": "res://TscnAndGd/UI/InGame/DayEndUI.gd",
+      "script": "RentDayEnd.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/UI/InGame/DayControl.tscn",
+      "base_script": "res://TscnAndGd/UI/InGame/DayControl.gd",
+      "script": "RentDayControl.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/UI/InGame/GameUI.tscn",
+      "base_script": "res://TscnAndGd/UI/InGame/GameUI.gd",
+      "script": "RentGameUI.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/UI/InGame/RewardUI.tscn",
+      "base_script": "res://TscnAndGd/UI/InGame/RewardUI.gd",
+      "script": "RentReward.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/UI/InGame/MenuUI.tscn",
+      "base_script": "res://TscnAndGd/UI/InGame/MenuUI.gd",
+      "script": "RentProductMenu.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Logics/GameLogic/GameLogic.tscn",
+      "base_script": "res://TscnAndGd/Logics/SystemLogic/SaveData.gd",
+      "script": "RentSaveData.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/SdkManager/Logic/SdkManager.tscn",
+      "base_script": "res://TscnAndGd/SdkManager/Logic/SdkManager.gd",
+      "script": "RentSdk.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Objects/Home/ChooseShopScroll.tscn",
+      "base_script": "res://TscnAndGd/Objects/Home/ChooseShopScroll.gd",
+      "script": "RentContract.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Objects/Home/HomeBusStation.tscn",
+      "base_script": "res://TscnAndGd/Objects/Home/HomeBusStation.gd",
+      "script": "RentBusStation.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/UI/InGame/ChooseMap.tscn",
+      "base_script": "res://TscnAndGd/UI/InGame/ChooseMap.gd",
+      "script": "RentChooseMap.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/UI/InGame/ChooseShop.tscn",
+      "base_script": "res://TscnAndGd/UI/InGame/ChooseShop.gd",
+      "script": "RentChooseShop.gd"
+    }
+  ],
+  "scene_clones": [
+    {
+      "source": "res://TscnAndGd/Main/Level/4_1.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.office_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/4_2.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.office_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/5_1.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.gym_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/3_2.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.old_street_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/2_2.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.tutorial.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/2_1.tscn",
+      "destination": "res://TscnAndGd/Main/Level/RentRoom_2_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/2_2.tscn",
+      "destination": "res://TscnAndGd/Main/Level/RentRoom_2_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/2_3.tscn",
+      "destination": "res://TscnAndGd/Main/Level/RentRoom_2_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/1_1.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_1_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/1_2.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_1_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/1_3.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_1_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/2_4.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_2_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/4_3.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_4_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/4_4.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_4_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/6_1.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_6_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/6_2.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_6_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/6_3.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_6_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/6_4.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_6_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/5_2.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_5_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/5_3.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_5_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/5_4.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_5_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/3_1.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_3_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/3_3.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_3_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/3_4.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_3_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/7_1.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_7_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/7_2.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_7_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/7_3.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_7_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/7_4.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_7_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/8_1.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_8_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/8_2.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_8_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/8_3.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_8_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    },
+    {
+      "source": "res://TscnAndGd/Main/Level/8_4.tscn",
+      "destination": "res://TscnAndGd/Main/Level/ftc.rent_mode.level_8_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "RentLevel.gd"
+    }
+  ],
+  "animation_aliases": [
+    {
+      "resource": "res://TscnAndGd/Logics/SystemLogic/AudioLogic.tscn",
+      "from": "美食街2",
+      "to": "房租模式"
+    }
+  ],
+  "levels": [
+    {
+      "name": "房租模式",
+      "base": "美食街2",
+      "values": {
+        "TSCN": "RentRoom_2_2",
+        "Name": "RentRoom",
+        "Info": "房租模式：无尽经营",
+        "Rent": "0",
+        "Menu": [
+          "橙汁S"
+        ],
+        "Funds": "1500",
+        "Popular": "1",
+        "GamePlay": [],
+        "Difficult": [
+          "无"
+        ],
+        "DevilList": [],
+        "Mission_1": "-1",
+        "Mission_2": "-1",
+        "MenuMax": "3",
+        "Type": [
+          "FRUIT",
+          "MILKTEA",
+          "MILK",
+          "TEA"
+        ],
+        "Tag": [
+          "初始",
+          "混合",
+          "红豆"
+        ],
+        "DrinkTypeList": [
+          "FRUIT",
+          "MILKTEA",
+          "MILK",
+          "TEA"
+        ],
+        "CustomersList": [
+          "LittleCup"
+        ],
+        "M": "",
+        "L": "",
+        "ExtraMax": "1",
+        "MenuList": [],
+        "DevilMax": "0"
+      }
+    }
+  ],
+  "loader_version": ">=1.0.1",
+  "load_after": [
+    "ftc.furniture_carry",
+    "ftc.talent_market"
+  ]
+}

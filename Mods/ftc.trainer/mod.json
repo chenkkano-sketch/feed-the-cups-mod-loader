@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "id": "ftc.trainer",
+  "name": "单机修改器",
+  "version": "3.0.1",
+  "api_version": "1.0",
+  "game_versions": [
+    "1.0.2.0"
+  ],
+  "entry": "Entry.gd",
+  "description": "I 装填当前订单；F7 自动配料；F8 自动点单并取杯；F5 移动倍率；F6 游戏倍率；F9 显隐；F10 重置。使用公共 API 叠加移动和游戏速度。",
+  "capabilities": [
+    "gameplay",
+    "ui",
+    "config",
+    "save"
+  ],
+  "dependencies": {},
+  "conflicts": []
+}

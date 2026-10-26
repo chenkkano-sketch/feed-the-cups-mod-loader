@@ -1,0 +1,828 @@
+{
+  "schema_version": 1,
+  "id": "ftc.talent_market",
+  "name": "人才市场",
+  "version": "1.5.4",
+  "api_version": "1.0",
+  "game_versions": [
+    "1.0.2.0"
+  ],
+  "loader_version": ">=1.0.2",
+  "entry": "Entry.gd",
+  "description": "F3 人才市场与员工调试。全部现存技能开放，含点单、货架整理、丢垃圾及其高级技能、补充空杯、设备维修、清洁、光环、速度被动及减益。新增社畜（工作+30%）、工匠精神（+50%）、认真（+15%）、工作狂（+50%），以及神速（移动+30%）、运动健将（+20%）、灵活（+10%）；另有偷懒成瘾（工作-30%）、慢性子（工作-15%）。不同速度被动与减益可并存并相加叠加，同名不可重复。删除手脚麻利、熟能生巧、健步如飞和疾行，旧技能槽自动清空并保留合同工资。 寻路按真实碰撞形状与员工宽度检查关闭大门，支持零碰撞层的门，行走中关门即重算路线；无路则释放任务，开门后恢复。",
+  "capabilities": [
+    "gameplay",
+    "input",
+    "ui",
+    "config",
+    "save"
+  ],
+  "dependencies": {},
+  "conflicts": [],
+  "load_after": [
+    "ftc.furniture_carry",
+    "ftc.trainer"
+  ],
+  "script_extensions": [
+    {
+      "scene": "res://TscnAndGd/Logics/GameLogic/GameLogic.tscn",
+      "base_script": "res://TscnAndGd/Logics/GameLogic/GameLogic.gd",
+      "script": "TalentGameLogic.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Logics/GameLogic/GameLogic.tscn",
+      "base_script": "res://TscnAndGd/Logics/GameLogic/AStarLogic.gd",
+      "script": "TalentAstar.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/UI/InGame/DayEndUI.tscn",
+      "base_script": "res://TscnAndGd/UI/InGame/DayEndUI.gd",
+      "script": "TalentDayEnd.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/0_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/0_all.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_1_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_1_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_1_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_1_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_2_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_2_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_2_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_2_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_3_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_3_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_3_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/1_3_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_1_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_1_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_1_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_1_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_2_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_2_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_2_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_2_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_3_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_3_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_3_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_3_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_4_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_4_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_4_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/2_4_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_1_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_1_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_1_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_1_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_2_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_2_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_2_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_2_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_3_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_3_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_3_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_3_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_4_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_4_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_4_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/3_4_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_1_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_1_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_1_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_1_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_2_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_2_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_2_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_2_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_3_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_3_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_3_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_3_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_4_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_4_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_4_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/4_4_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_1_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_1_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_1_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_1_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_2_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_2_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_2_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_2_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_3_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_3_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_3_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_3_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_4_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_4_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_4_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/5_4_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_1_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_1_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_1_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_1_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_2_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_2_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_2_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_2_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_3_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_3_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_3_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_3_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_4_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_4_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_4_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/6_4_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_1_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_1_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_1_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_1_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_2_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_2_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_2_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_2_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_3_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_3_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_3_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_3_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_4_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_4_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_4_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/7_4_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_1_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_1_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_1_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_1_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_2_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_2_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_2_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_2_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_3_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_3_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_3_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_3_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_4.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_4_0.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_4_1.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_4_2.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    },
+    {
+      "scene": "res://TscnAndGd/Main/Level/8_4_3.tscn",
+      "base_script": "res://TscnAndGd/Main/Level/NewLevel.gd",
+      "script": "TalentLevel.gd"
+    }
+  ]
+}
