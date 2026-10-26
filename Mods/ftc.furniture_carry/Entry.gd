@@ -13,6 +13,6 @@ func on_load(context):
 	return true
 
 func _control(actor, button, value, _type):
-	if mode.coop_session() != null:
+	if SdkManager.is_multiplay:
 		return mode.coop_control(actor, button, value)
 	return mode.carry.handle_control(actor, button, value)

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "ftc.rent_mode",
   "name": "房租模式",
-  "version": "0.14.16",
+  "version": "0.14.17",
   "api_version": "1.0",
   "game_versions": [
     "1.0.2.0"

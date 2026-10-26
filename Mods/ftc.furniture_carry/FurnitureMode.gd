@@ -2,6 +2,8 @@ extends Node
 
 var api
 var carry
+var session
+var player_carries = {}
 var preparing = false
 var navigation_pending = false
 var navigation_revision = 0
@@ -14,19 +16,24 @@ var notice_until = 0
 func _ready():
 	pause_mode = Node.PAUSE_MODE_PROCESS
 	carry = preload("res://ftc_mods/ftc.furniture_carry/FurnitureCarry.gd").new(self)
+	session = preload("res://ftc_mods/ftc.furniture_carry/FurnitureSession.gd").new(self)
 	GameLogic.connect("DayStart", self, "_day_start")
 	GameLogic.connect("OpenStore", self, "_opened")
+	SdkManager.connect("DelNetPlayer", self, "_player_departed")
 	_build_ui()
+
+func _player_departed(id):
+	if SdkManager.is_multiplay:
+		session.departed(int(id))
 
 func _offline():
 	return api.offline()
 
 func is_run():
-	return (_offline() or coop_session() != null) and GameLogic.LoadingUI.IsLevel and is_instance_valid(carry.level) and carry.level == get_tree().root.get_node_or_null("Level") and is_instance_valid(GameLogic.player_1P)
+	return GameLogic.LoadingUI.IsLevel and is_instance_valid(carry.level) and carry.level == get_tree().root.get_node_or_null("Level") and is_instance_valid(GameLogic.player_1P)
 
 func coop_session():
-	var rent = api.service("ftc.rent_mode", "mode")
-	return rent.coop if SdkManager.is_multiplay and rent != null and rent.is_run() else null
+	return session if SdkManager.is_multiplay else null
 
 func is_preparing():
 	return preparing and is_run() and not GameLogic.GameUI.DayEnd and not GameLogic.GameUI.Is_Open and not GameLogic._DayOver_Bool
@@ -42,9 +49,8 @@ func _opened():
 	notice.text = ""
 
 func toggle():
-	var session = coop_session()
-	if session != null:
-		session.request_editor()
+	if SdkManager.is_multiplay:
+		session.request_toggle()
 		return
 	carry.set_enabled(not carry.enabled)
 
@@ -54,6 +60,7 @@ func _input(event):
 		get_tree().set_input_as_handled()
 
 func _process(delta):
+	session.tick(delta)
 	if notice_until > 0 and OS.get_ticks_msec() > notice_until:
 		notice.text = ""
 		notice_until = 0
@@ -74,13 +81,11 @@ func _process(delta):
 	if get_tree().paused:
 		return
 	# Purchasing and animations continue independently of the frozen business clock.
-	var session = coop_session()
-	if session == null or session.authority():
+	if not SdkManager.is_multiplay or session.authority():
 		GameLogic.Buy.call_check(GameLogic.GameUI.CurTime + 1.0)
 	var rent = api.service("ftc.rent_mode", "mode")
-	carry_button.set_active(carry.enabled and (session == null or session.editor == int(SdkManager.user_id)))
-	if session != null and session.editor != 0 and session.editor != int(SdkManager.user_id):
-		carry_button.hint_tooltip = "其他玩家正在实时搬运，等待其按 F2 退出。"
+	carry_button.set_active(carry.enabled)
+	carry_button.hint_tooltip = "F2 开关自己的搬运模式；联机玩家可同时搬运。"
 	_sync_hud(rent)
 
 func _build_ui():
@@ -134,9 +139,8 @@ func _start_business():
 func can_open():
 	if not is_run():
 		return true
-	var session = coop_session()
-	if session != null and session.editor != 0:
-		_message("请搬运中的玩家按 F2 退出后，再开始营业。")
+	if SdkManager.is_multiplay and not session.modes.empty():
+		_message("请所有搬运中的玩家按 F2 退出后，再开始营业。")
 		return false
 	if carry.enabled:
 		_message("请先按 F2 退出搬运模式，再开始营业。")
@@ -152,10 +156,13 @@ func can_open():
 func _save_now():
 	if not is_preparing() or get_tree().paused:
 		return
-	var session = coop_session()
-	if session != null and not session.authority():
+	if SdkManager.is_multiplay and not session.authority():
 		return
-	carry.cancel()
+	for worker in player_carries.values():
+		if is_instance_valid(worker.held):
+			return
+	if is_instance_valid(carry.held):
+		return
 	if GameLogic.player_1P.Con.IsHold:
 		return
 	var rent = api.service("ftc.rent_mode", "mode")
@@ -167,73 +174,162 @@ func _save_now():
 	GameLogic.call_save()
 
 func can_control(actor):
-	var session = coop_session()
-	return actor == GameLogic.player_1P if session == null else session.authority() and int(actor.get("cur_Player")) == session.editor
+	return actor == GameLogic.player_1P
 
 func coop_control(actor, button, value):
-	var session = coop_session()
-	if session == null or session.editor == 0 or int(actor.get("cur_Player")) != session.editor:
+	if not session.modes.has(int(actor.get("cur_Player"))):
 		return false
-	if not session.authority():
-		# Remote button mirroring must never execute the same action twice.
+	if actor != GameLogic.player_1P:
+		# Network button mirroring must not perform a second local pickup.
 		return button in ["A", "B", "X", "Y", "L1", "L2", "L3", "R1", "R2", "R3", "BACK"]
 	return carry.handle_control(actor, button, value)
 
-func coop_editor(id):
-	carry.cancel()
-	carry.enabled = id != 0
+func find_player(id):
+	if not is_instance_valid(carry.level):
+		return null
+	for actor in carry.level.get_node("YSort/Players").get_children():
+		if int(actor.get("cur_Player")) == id:
+			return actor
+	return null
+
+func carry_for(id):
+	if not SdkManager.is_multiplay or id == int(SdkManager.user_id):
+		return carry
+	if not player_carries.has(id):
+		var worker = preload("res://ftc_mods/ftc.furniture_carry/FurnitureCarry.gd").new(self)
+		worker.level = carry.level
+		worker.original_slots = carry.original_slots
+		worker.npc_cells = carry.npc_cells
+		player_carries[id] = worker
+	return player_carries[id]
+
+func set_player_enabled(id, value):
+	var worker = carry_for(id)
+	if value:
+		if worker == carry and not worker.enabled:
+			if not worker.set_enabled(true):
+				return false
+		else:
+			worker.enabled = true
+		return true
+	if is_instance_valid(worker.held):
+		worker.cancel(false)
+	worker.enabled = false
+	worker.pressed = false
+	if is_instance_valid(worker.guide):
+		worker.guide.queue_free()
+		worker.guide = null
+	return true
+
+func reset_carries():
+	for id in player_carries.keys():
+		set_player_enabled(id, false)
+	player_carries.clear()
+	if is_instance_valid(carry.held):
+		carry.cancel(false)
+	carry.enabled = false
 	carry.pressed = false
 	if is_instance_valid(carry.guide):
 		carry.guide.queue_free()
 		carry.guide = null
-	if id == int(SdkManager.user_id) and id != 0:
-		carry.guide = load("res://ftc_mods/ftc.furniture_carry/LayoutGuide.gd").new()
-		carry.guide.z_index = -1
-		carry.guide.cells = carry.level.get_node("MapNode/Floor").get_used_cells()
-		for cell in carry.original_slots:
-			if not cell in carry.guide.cells:
-				carry.guide.cells.append(cell)
-		for cell in carry.npc_cells:
-			if not cell in carry.guide.cells:
-				carry.guide.cells.append(cell)
-		carry.level.add_child(carry.guide)
-		_message("实时搬运已开启：交互拿起、放下或交换家具，F2 退出；房主保存布局。")
 
-func coop_action(packet):
-	var action = str(packet.get("action", ""))
-	var session = coop_session()
-	if session == null:
-		return
-	if action == "pick":
-		var actor = session.find_player(int(packet.player))
-		var fixture = get_node_or_null(NodePath(packet.path))
-		if is_instance_valid(actor) and is_instance_valid(fixture):
-			carry.pick(actor, fixture)
-	elif action == "swap" and is_instance_valid(carry.held):
-		var actor = session.find_player(int(packet.player))
-		var fixture = get_node_or_null(NodePath(packet.path))
-		if is_instance_valid(actor) and is_instance_valid(fixture) and packet.get("position") is Vector2 and packet.get("vacant") is Vector2:
-			carry.swap(actor, fixture, true, packet.position, packet.vacant)
-	elif action == "release" and is_instance_valid(carry.held):
-		var fixture = carry.held
-		carry._release(carry.level.get_node("YSort/Devices"), packet.position, false)
-		_refresh_order_points(fixture)
-		_refresh_navigation(carry.level)
+func layout_snapshot():
+	var positions = {}
+	var holds = []
+	for fixture in carry.level.get_node("YSort/Devices").get_children():
+		if fixture is Node2D:
+			positions[fixture.name] = fixture.position
+	if is_instance_valid(carry.held):
+		holds.append({"player": int(carry.player.cur_Player), "object": carry.held.name})
+	for worker in player_carries.values():
+		if is_instance_valid(worker.held) and is_instance_valid(worker.player):
+			holds.append({"player": int(worker.player.cur_Player), "object": worker.held.name})
+	return {"positions": positions, "holds": holds}
+
+func apply_snapshot(layout):
+	if not layout is Dictionary or not layout.get("positions") is Dictionary or not layout.get("holds") is Array or not is_run():
+		return false
+	if not layout.holds.empty() and not is_preparing():
+		return false
+	for record in layout.holds:
+		if not record is Dictionary or not is_instance_valid(find_player(int(record.get("player", 0)))):
+			return false
+	reset_carries()
+	var devices = carry.level.get_node("YSort/Devices")
+	for name in layout.positions:
+		var fixture = devices.get_node_or_null(str(name))
+		if is_instance_valid(fixture) and layout.positions[name] is Vector2:
+			fixture.position = layout.positions[name]
+	for id in session.modes.keys():
+		if not set_player_enabled(int(id), true):
+			return false
+	for record in layout.holds:
+		var actor = find_player(int(record.player))
+		var fixture = devices.get_node_or_null(str(record.object))
+		var worker = carry_for(int(record.player))
+		worker.enabled = true
+		if not is_instance_valid(fixture) or not worker.pick(actor, fixture, false, true):
+			return false
+	_refresh_navigation(carry.level)
+	return true
+
+func apply_action(action, synchronized):
+	if not is_preparing() or not action is Dictionary:
+		return false
+	var id = int(action.get("player", 0))
+	var actor = find_player(id)
+	if not is_instance_valid(actor):
+		return false
+	var worker = carry_for(id)
+	if not worker.enabled:
+		return false
+	var kind = str(action.get("kind", ""))
+	if kind == "pick":
+		var fixture = carry.level.get_node("YSort/Devices").get_node_or_null(str(action.get("object", "")))
+		if not is_instance_valid(fixture):
+			return false
+		if not synchronized and actor.global_position.distance_to(fixture.global_position) > 240:
+			return false
+		return worker.pick(actor, fixture, false, true)
+	if not is_instance_valid(worker.held) or worker.held.name != str(action.get("held", action.get("object", ""))):
+		return false
+	if kind == "release" and action.get("position") is Vector2:
+		var cell = worker.cell_at(action.position)
+		return worker.place(cell, false, synchronized, action.position)
+	if kind == "swap":
+		var target = carry.level.get_node("YSort/Devices").get_node_or_null(str(action.get("object", "")))
+		if not is_instance_valid(target):
+			return false
+		if not synchronized and actor.global_position.distance_to(target.global_position) > 240:
+			return false
+		return worker.swap(actor, target, synchronized, action.get("position"), action.get("vacant"))
+	return false
+
+func completed_action(action):
+	var result = action.duplicate(true)
+	var worker = carry_for(int(action.player))
+	if action.kind == "release":
+		var fixture = carry.level.get_node("YSort/Devices").get_node_or_null(str(action.object))
+		if is_instance_valid(fixture):
+			result.position = fixture.position
+	elif action.kind == "swap" and is_instance_valid(worker.held):
+		result.vacant = worker.original_transform.origin
+		var fixture = carry.level.get_node("YSort/Devices").get_node_or_null(str(action.get("held", "")))
+		if is_instance_valid(fixture):
+			result.position = fixture.position
+	return result
 
 func coop_picked(path, actor):
-	var session = coop_session()
-	if session != null and session.authority() and not session.applying:
-		session.notify("carry", {"action": "pick", "path": str(path), "player": int(actor.cur_Player)})
+	if SdkManager.is_multiplay:
+		session.local_action({"kind": "pick", "object": str(path).get_file()})
 
-func coop_released(position):
-	var session = coop_session()
-	if session != null and session.authority() and not session.applying:
-		session.notify("carry", {"action": "release", "position": position})
+func coop_released(name, actor, position):
+	if SdkManager.is_multiplay and is_instance_valid(actor):
+		session.local_action({"kind": "release", "object": str(name), "held": str(name), "position": position})
 
-func coop_swapped(path, actor, position, vacant):
-	var session = coop_session()
-	if session != null and session.authority() and not session.applying:
-		session.notify("carry", {"action": "swap", "path": path, "player": int(actor.cur_Player), "position": position, "vacant": vacant})
+func coop_swapped(name, actor, position, vacant, previous):
+	if SdkManager.is_multiplay:
+		session.local_action({"kind": "swap", "object": str(name), "held": previous, "position": position, "vacant": vacant})
 
 func _refresh_order_points(node):
 	if node.has_method("call_OrderPoint"):
@@ -245,8 +341,7 @@ func _refresh_navigation(level):
 	navigation_revision += 1
 	var revision = navigation_revision
 	navigation_pending = true
-	yield(get_tree(), "physics_frame")
-	yield(get_tree(), "physics_frame")
+	yield(get_tree().create_timer(0.18), "timeout")
 	if revision != navigation_revision:
 		return
 	if not is_instance_valid(level) or level != carry.level or not is_preparing():
@@ -254,6 +349,9 @@ func _refresh_navigation(level):
 		return
 	var astar = GameLogic.Astar
 	carry.apply_navigation()
+	if SdkManager.is_multiplay and not session.authority():
+		navigation_pending = false
+		return
 	astar.call_Path2D_init()
 	astar.AStar_NPC_Wait.clear()
 	astar.call_TMap_init(level.get_node("MapNode/Floor"))

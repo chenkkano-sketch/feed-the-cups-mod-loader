@@ -182,14 +182,14 @@ func pick_from_player(actor):
 		return false
 	return pick(actor, object)
 
-func pick(actor, object, broadcast = true):
+func pick(actor, object, broadcast = true, synchronized = false):
 	# Never detach just the tabletop from a multi-part station.
 	var fixture = root_fixture(object)
 	if fixture != null:
 		object = fixture
 	if not enabled or not owner.preparing or owner.get_tree().paused or actor.Con.IsHold or not movable(object):
 		return false
-	if fixture == null or actor.global_position.distance_to(fixture.global_position) > 180:
+	if fixture == null or (not synchronized and actor.global_position.distance_to(fixture.global_position) > 240):
 		return false
 	var object_path = object.get_path()
 	player = actor
@@ -204,6 +204,19 @@ func pick(actor, object, broadcast = true):
 	var old_speed = object.CarrySpeed
 	object.CarrySpeed = 0.75
 	GameLogic.Device.call_Pick_Logic(actor, object)
+	# The native pickup helper can decline a mirrored guest. Attach the same
+	# fixture to that player's weapon node so every peer sees it move smoothly.
+	var needs_guest_fallback = SdkManager.is_multiplay and not SdkManager.lobby_is_master and actor == GameLogic.player_1P
+	if (synchronized or needs_guest_fallback) and (actor.Con.HoldObj != object or object.get_parent() != actor.WeaponNode):
+		object.get_parent().remove_child(object)
+		actor.WeaponNode.add_child(object)
+		object.position = Vector2.ZERO
+		object.rotation = 0
+		actor.Con.HoldObj = object
+		actor.Con.IsHold = true
+		actor.Con.HoldInsId = object.get_instance_id()
+		object.Holding = true
+		object.Holder = actor
 	# Native shelves use the pushing pose, whose weapon node is hidden.
 	actor.Con.NeedPush = false
 	actor.call_StatChange()
@@ -212,8 +225,8 @@ func pick(actor, object, broadcast = true):
 	# Furniture scenes use absolute draw order; show carried furniture above the player.
 	object.z_as_relative = true
 	object.z_index = 10
-	owner._refresh_navigation(level)
-	owner._message("已拿起。面向空地放下，或面向另一件家具交换；F2 可放到腾出的空位并退出。")
+	if not synchronized:
+		owner._message("已拿起。面向空地放下，或面向另一件家具交换；F2 可放到腾出的空位并退出。")
 	var success = actor.Con.HoldObj == object and object.get_parent() == actor.WeaponNode
 	if success and broadcast:
 		owner.coop_picked(object_path, actor)
@@ -314,27 +327,29 @@ func validate_place(cell, replacing = null):
 			return "这里会堵住顾客前往点单机的通道。"
 	return ""
 
-func place(cell):
+func place(cell, broadcast = true, synchronized = false, placed_position = null):
 	if not enabled or not owner.preparing or owner.get_tree().paused:
 		return false
 	var occupant = fixture_at(cell)
 	if occupant != null:
-		return swap(player, occupant)
-	var error = validate_place(cell)
+		return swap(player, occupant, synchronized)
+	var error = "" if synchronized else validate_place(cell)
 	if error != "":
 		owner._message(error)
 		return false
 	var parent = level.get_node("YSort/Devices")
 	var offset = original_transform.origin - cell_at(original_transform.origin) * 100
-	var target = cell * 100 + offset
+	var target = placed_position if synchronized and placed_position is Vector2 else cell * 100 + offset
 	var object = held
 	_release(parent, target, false)
-	owner.coop_released(target)
+	if broadcast:
+		owner.coop_released(object.name, player, target)
 	if parent.name == "ObjNode":
 		parent.get_parent().OnTableObj = object
 	owner._refresh_order_points(object)
 	owner._refresh_navigation(level)
-	owner._message("已放下。可以继续走动和搬运，F2 退出搬运模式。")
+	if not synchronized:
+		owner._message("已放下。可以继续走动和搬运，F2 退出搬运模式。")
 	return true
 
 func swap(actor, target, synchronized = false, placed_position = null, vacant_position = null):
@@ -347,7 +362,7 @@ func swap(actor, target, synchronized = false, placed_position = null, vacant_po
 		return false
 	var cell = cell_at(target.position)
 	if not synchronized:
-		if actor.global_position.distance_to(target.global_position) > 180:
+		if actor.global_position.distance_to(target.global_position) > 240:
 			return false
 		var error = validate_place(cell, target)
 		if error != "":
@@ -364,11 +379,11 @@ func swap(actor, target, synchronized = false, placed_position = null, vacant_po
 	var placement = placed_position if placed_position is Vector2 else cell * 100 + held_offset
 	var vacancy = vacant_position if vacant_position is Vector2 else cell_at(old_transform.origin) * 100 + target_offset
 	_release(devices, placement, false)
-	if not pick(actor, target, false):
+	if not pick(actor, target, false, synchronized):
 		# Restore the carried object if the native pickup unexpectedly refuses.
 		if held == target and target.get_parent() == actor.WeaponNode:
 			_release(devices, target_start, false)
-		if not actor.Con.IsHold and pick(actor, old_object, false):
+		if not actor.Con.IsHold and pick(actor, old_object, false, synchronized):
 			original_parent = old_parent
 			original_transform = old_transform
 			original_player_pos = old_player_pos
@@ -383,7 +398,7 @@ func swap(actor, target, synchronized = false, placed_position = null, vacant_po
 	owner._refresh_order_points(old_object)
 	owner._refresh_navigation(level)
 	if not synchronized:
-		owner.coop_swapped(target_path, actor, placement, vacancy)
+		owner.coop_swapped(target.name, actor, placement, vacancy, old_object.name)
 		owner._message("已交换。当前手持面前的家具；再次交互可继续交换或放下。")
 	return true
 
@@ -414,7 +429,7 @@ func _release(parent, pos, restoring):
 	held = null
 	collision_states.clear()
 
-func cancel():
+func cancel(broadcast = true):
 	if not is_instance_valid(held) or not is_instance_valid(original_parent):
 		held = null
 		return
@@ -422,6 +437,7 @@ func cancel():
 	if is_instance_valid(player) and cell_at(player.global_position) == cell_at(original_parent.to_global(original_transform.origin)):
 		player.global_position = original_player_pos
 	_release(original_parent, original_transform.origin, true)
-	owner.coop_released(original_transform.origin)
+	if broadcast:
+		owner.coop_released(object.name, player, original_transform.origin)
 	owner._refresh_order_points(object)
 	owner._refresh_navigation(level)

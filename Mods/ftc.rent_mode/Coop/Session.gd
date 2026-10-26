@@ -10,9 +10,6 @@ var received_revision = -1
 var run = ""
 var waiting_layout = false
 var pending_level = null
-var editor = 0
-var request_seq = 0
-var sequences = {}
 var applying = false
 var last_host = 0
 var result_acks = {}
@@ -61,7 +58,6 @@ func begin_run():
 	owner.state.run_id = id
 	if run != id:
 		revision = 0
-		sequences.clear()
 		result_acks.clear()
 		last_sent.clear()
 	run = id
@@ -91,22 +87,13 @@ func tick(delta):
 	for id in peers.keys():
 		if not id in present:
 			peers.erase(id)
-	if authority() and editor != 0 and not editor in present:
-		set_editor(0)
 	send(0 if authority() else SdkManager.lobby_master_id, {"kind": "hello", "versions": versions()})
 	if authority() and owner.is_run():
 		broadcast_state()
 	_finish_if_claimed()
 
 func reset():
-	var furniture = owner.api.service("ftc.furniture_carry", "mode")
-	if furniture != null and editor != 0:
-		applying = true
-		furniture.coop_editor(0)
-		applying = false
 	peers.clear()
-	sequences.clear()
-	editor = 0
 	run = ""
 	received_revision = -1
 	revision = 0
@@ -130,13 +117,7 @@ func receive(sender, packet):
 	if authority():
 		if not Policy.compatible(versions(), peers.get(sender, {})):
 			return
-		if kind == "edit_request" and owner.is_run() and packet.get("run") == run:
-			var seq = int(packet.get("seq", 0))
-			if seq <= int(sequences.get(sender, 0)):
-				return
-			sequences[sender] = seq
-			request_editor(sender)
-		elif kind == "result_claimed" and packet.get("run") == run and packet.get("id") == owner.state.get("final_result", {}).get("id", "") and owner.state.get("failed", false):
+		if kind == "result_claimed" and packet.get("run") == run and packet.get("id") == owner.state.get("final_result", {}).get("id", "") and owner.state.get("failed", false):
 			result_acks[sender] = true
 			_finish_if_claimed()
 		return
@@ -167,19 +148,9 @@ func receive(sender, packet):
 			owner.opened = bool(packet.get("opened", false))
 			GameLogic.cur_NoOrderNum = int(packet.get("lost_order", 0))
 			GameLogic.cur_NoSellNum = int(packet.get("lost_sell", 0))
-		"editor":
-			if packet.get("run") == run and int(packet.get("day", -1)) == int(GameLogic.cur_Day):
-				apply_editor(int(packet.editor))
 		"notice":
 			if packet.get("run") == run:
 				owner._message(str(packet.get("text", "")))
-		"carry":
-			if packet.get("run") == run and int(packet.get("day", -1)) == int(GameLogic.cur_Day):
-				var furniture = owner.api.service("ftc.furniture_carry", "mode")
-				if furniture != null:
-					applying = true
-					furniture.coop_action(packet)
-					applying = false
 		"product_wait":
 			if packet.get("run") == run:
 				GameLogic.GameUI.get_node("RewardUI").call_clean()
@@ -260,50 +231,3 @@ func notify(kind, values = {}):
 	packet.run = run
 	packet.day = int(GameLogic.cur_Day)
 	send(0, packet)
-
-func request_editor(id = -1):
-	if not online():
-		return
-	if id < 0:
-		id = int(SdkManager.user_id)
-	if not authority():
-		request_seq += 1
-		send(SdkManager.lobby_master_id, {"kind": "edit_request", "seq": request_seq, "run": run})
-		return
-	if editor == id:
-		set_editor(0)
-		return
-	var actor = find_player(id)
-	if Policy.can_edit(editor, id, owner.preparing and not owner.get_tree().paused, is_instance_valid(actor) and not actor.Con.IsHold):
-		set_editor(id)
-	else:
-		var text = "已有玩家正在搬运，或当前手持物品；请放下物品并等对方退出后再进入。"
-		if id == int(SdkManager.user_id):
-			owner._message(text)
-		else:
-			send(id, {"kind": "notice", "run": run, "text": text})
-
-func find_player(id):
-	var level = owner.api.current_level()
-	if not is_instance_valid(level):
-		return null
-	for actor in level.get_node("YSort/Players").get_children():
-		if int(actor.get("cur_Player")) == id:
-			return actor
-	return null
-
-func set_editor(id):
-	apply_editor(id)
-	notify("editor", {"editor": editor})
-	if id == 0:
-		var furniture = owner.api.service("ftc.furniture_carry", "mode")
-		if furniture != null:
-			furniture._save_now()
-
-func apply_editor(id):
-	editor = id
-	var furniture = owner.api.service("ftc.furniture_carry", "mode")
-	if furniture != null:
-		applying = true
-		furniture.coop_editor(id)
-		applying = false

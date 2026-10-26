@@ -3,7 +3,7 @@ extends "res://TscnAndGd/Main/Level/NewLevel.gd"
 func _LoadGame():
 	var mode = get_node_or_null("/root/FurnitureCarryMode")
 	if mode != null:
-		mode.carry.cancel()
+		mode.session.reset()
 		mode.carry.capture_slots(self)
 	._LoadGame()
 	if mode != null:
@@ -21,5 +21,5 @@ func TMap_AStarLogic():
 func call_level_save():
 	var mode = get_node_or_null("/root/FurnitureCarryMode")
 	if mode != null and mode.carry.level == self:
-		mode.carry.cancel()
+		mode.reset_carries()
 	.call_level_save()

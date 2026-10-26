@@ -38,7 +38,6 @@ var remote_result_record = {}
 
 func _ready():
 	coop = preload("res://ftc_mods/ftc.rent_mode/Coop/Session.gd").new(self)
-	SdkManager.connect("DelNetPlayer", self, "_coop_departed")
 	SdkManager.connect("LeaveLobby", self, "_coop_left")
 	sprint = load("res://ftc_mods/ftc.rent_mode/RentSprint.gd").new(self)
 	pause_mode = Node.PAUSE_MODE_PROCESS
@@ -62,10 +61,6 @@ func _offline():
 
 func authority():
 	return not SdkManager.is_multiplay or SdkManager.lobby_is_master
-
-func _coop_departed(id):
-	if authority() and coop.editor == int(id):
-		coop.set_editor(0)
 
 func _coop_left():
 	coop.reset()
@@ -519,7 +514,7 @@ func _store_state():
 func room_loaded():
 	if GameLogic.Save.levelData.has("rent_mode"):
 		_restore_state()
-	OS.set_window_title("Feed The Cups · 房租模式 v0.14.16 · 联机")
+	OS.set_window_title("Feed The Cups · 房租模式 v0.14.17 · 联机")
 
 func begin_prep():
 	if not is_run():

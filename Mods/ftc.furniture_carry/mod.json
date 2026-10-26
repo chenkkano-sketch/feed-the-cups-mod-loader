@@ -2,14 +2,14 @@
   "schema_version": 1,
   "id": "ftc.furniture_carry",
   "name": "自由搬运",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "api_version": "1.0",
   "game_versions": [
     "1.0.2.0"
   ],
   "loader_version": ">=1.0.1",
   "entry": "Entry.gd",
-  "description": "正式关卡和房租模式通用。F2 开关搬运，原交互键拿起、放下整套设施，手持时可与面前可搬运家具交换；开店前营业时钟暂停，人物移动和采购配送照常，手动开始营业。右侧蓝图图标切换搬运，开启时绿色勾选；通过收银机开业。与房租模式组合时支持多人实时搬运与交换，房主确认操作，其他玩家实时可见。",
+  "description": "普通关卡和房租模式通用。联机玩家可各自按 F2 开关搬运，同时拿起、放下或交换整套家具；手持家具跟随人物实时显示，房主确认落点并同步布局。开店前营业时钟暂停，可调整布局和备餐；所有玩家退出搬运后开始营业。",
   "capabilities": [
     "gameplay",
     "input",
@@ -19,6 +19,11 @@
   "dependencies": {},
   "conflicts": [],
   "script_extensions": [
+    {
+      "scene": "res://TscnAndGd/SdkManager/Logic/SdkManager.tscn",
+      "base_script": "res://TscnAndGd/SdkManager/Logic/SdkManager.gd",
+      "script": "FurnitureSdk.gd"
+    },
     {
       "scene": "res://TscnAndGd/UI/InGame/GameUI.tscn",
       "base_script": "res://TscnAndGd/UI/InGame/GameUI.gd",
