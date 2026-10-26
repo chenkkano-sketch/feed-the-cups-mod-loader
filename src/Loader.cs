@@ -13,7 +13,7 @@ using System.Web.Script.Serialization;
 
 namespace CupsModLoader {
 public static class Data {
-    public const string Version = "1.1.2";
+    public const string Version = "1.1.3";
     public const string Api = "1.0";
     public const string GameHash = "6bd9534ba18c2b8ed17db98b3080c85176d3d9c1cd80ead2ae3a9884b773b109";
     public const string ExeHash = "c52fb468fa1cb9c0fb048cd23c680023a16ad47e056fbf7b8e454340c924a745";

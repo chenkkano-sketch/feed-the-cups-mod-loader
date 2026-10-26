@@ -240,10 +240,10 @@ func layout_snapshot():
 		if fixture is Node2D:
 			positions[fixture.name] = fixture.position
 	if is_instance_valid(carry.held):
-		holds.append({"player": int(carry.player.cur_Player), "object": carry.held.name})
+		holds.append({"player": int(carry.player.cur_Player), "object": carry.held.name, "origin": carry.original_transform.origin})
 	for worker in player_carries.values():
 		if is_instance_valid(worker.held) and is_instance_valid(worker.player):
-			holds.append({"player": int(worker.player.cur_Player), "object": worker.held.name})
+			holds.append({"player": int(worker.player.cur_Player), "object": worker.held.name, "origin": worker.original_transform.origin})
 	return {"positions": positions, "holds": holds}
 
 func apply_snapshot(layout):
@@ -268,6 +268,8 @@ func apply_snapshot(layout):
 		var fixture = devices.get_node_or_null(str(record.object))
 		var worker = carry_for(int(record.player))
 		worker.enabled = true
+		if is_instance_valid(fixture) and record.get("origin") is Vector2:
+			fixture.position = record.origin
 		if not is_instance_valid(fixture) or not worker.pick(actor, fixture, false, true):
 			return false
 	_refresh_navigation(carry.level)
@@ -295,6 +297,8 @@ func apply_action(action, synchronized):
 		return false
 	if kind == "release" and action.get("position") is Vector2:
 		var cell = worker.cell_at(action.position)
+		if worker.fixture_at(cell) != null:
+			return false
 		return worker.place(cell, false, synchronized, action.position)
 	if kind == "swap":
 		var target = carry.level.get_node("YSort/Devices").get_node_or_null(str(action.get("object", "")))

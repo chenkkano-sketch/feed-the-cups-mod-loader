@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "ftc.furniture_carry",
   "name": "自由搬运",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "api_version": "1.0",
   "game_versions": [
     "1.0.2.0"
